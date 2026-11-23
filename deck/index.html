@@ -492,10 +492,9 @@ run: echo <span class="s">"$TITLE"</span></pre>
   <div class="kicker">Runtime · skanery</div>
   <h2>Skanery runtime</h2>
   <ul class="clean">
-    <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają</li>
+    <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają<span class="sub">prewencja: <b>Kyverno</b> (nie wdrożysz niepodpisanego / uprzywilejowanego) · <b>Cilium</b> (default deny, także egress) · <b>Tetragon</b> (eBPF, widzi i może zablokować)</span></li>
     <li><b>VM i kontenery:</b> podatne pakiety na żywych maszynach</li>
     <li><b>Monitoring powierzchni ataku:</b> co faktycznie wystawiacie do internetu<span class="sub">za darmo na start: <b>moje.cert.pl</b> (CERT Polska, skaner Artemis, open source)</span></li>
-    <li><b>Prewencja w klastrze:</b> Kyverno, Cilium, Tetragon<span class="sub">Kyverno: nie wdrożysz niepodpisanego / uprzywilejowanego · Cilium: network policy, default deny, także egress · Tetragon: eBPF, widzi i może zablokować</span></li>
   </ul>
   <div class="punch">To działka, w której bardzo dużą część oddajemy toolingowi.</div>
 </div>
