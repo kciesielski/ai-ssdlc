@@ -26,7 +26,7 @@ Do wystąpienia „Jak nie zwariować z podatnościami w erze AI” (Łódź JUG
 - Ciekawe: [„Beyond SHA Pinning” (slajdy, CfgMgmtCamp 2026)](https://cfp.cfgmgmtcamp.org/media/ghent2026/submissions/E9ANZ8/resources/Beyond_SHA_Pinning__Security_for_CI_CD_Pipelines__a7Smty9.pdf) · [GitHub Security Lab: pwn requests](https://securitylab.github.com/resources/github-actions-preventing-pwn-requests/)
 
 ## Runtime: chmura, K8s, powierzchnia ataku
-- Narzędzia: [moje.cert.pl](https://moje.cert.pl) (za darmo, CERT Polska), [Prowler](https://github.com/prowler-cloud/prowler) (OSS), [Kubescape](https://kubescape.io/) (OSS), [Nuclei](https://github.com/projectdiscovery/nuclei) (OSS); platformy: [Aikido](https://www.aikido.dev), [Wiz](https://www.wiz.io/) ($)
+- Narzędzia: [moje.cert.pl](https://moje.cert.pl) (za darmo, CERT Polska), [Prowler](https://github.com/prowler-cloud/prowler) (OSS), [Kubescape](https://kubescape.io/) (OSS), prewencja w klastrze: [Kyverno](https://kyverno.io/), [Cilium](https://cilium.io/), [Tetragon](https://tetragon.io/) (OSS), [Nuclei](https://github.com/projectdiscovery/nuclei) (OSS); platformy: [Aikido](https://www.aikido.dev), [Wiz](https://www.wiz.io/) ($)
 - Ciekawe: [CERT Polska o skanerze Artemis](https://cert.pl/en/posts/2024/01/artemis-security-scanner/)
 
 ## WAF / RASP: kup sobie czas

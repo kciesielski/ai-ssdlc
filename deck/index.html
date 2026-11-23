@@ -495,6 +495,7 @@ run: echo <span class="s">"$TITLE"</span></pre>
     <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają</li>
     <li><b>VM i kontenery:</b> podatne pakiety na żywych maszynach</li>
     <li><b>Monitoring powierzchni ataku:</b> co faktycznie wystawiacie do internetu<span class="sub">za darmo na start: <b>moje.cert.pl</b> (CERT Polska, skaner Artemis, open source)</span></li>
+    <li><b>Prewencja w klastrze:</b> Kyverno, Cilium, Tetragon<span class="sub">Kyverno: nie wdrożysz niepodpisanego / uprzywilejowanego · Cilium: network policy, default deny, także egress · Tetragon: eBPF, widzi i może zablokować</span></li>
   </ul>
   <div class="punch">To działka, w której bardzo dużą część oddajemy toolingowi.</div>
 </div>
@@ -516,7 +517,7 @@ run: echo <span class="s">"$TITLE"</span></pre>
   </svg>
   <div class="waf-logos"><figure><img src="img/cloudflare.svg" alt="Cloudflare"><figcaption>Cloudflare WAF</figcaption></figure><figure><img src="img/cloud-armor.svg" alt=""><figcaption>Google Cloud Armor</figcaption></figure><figure><img src="img/aws-waf.svg" alt=""><figcaption>AWS WAF</figcaption></figure></div>
   <p style="margin-bottom:14px">Patch nie zdąży. Kontrola kompensująca blokuje exploit, zanim przyjdzie patch.</p>
-  <div class="box tint" style="padding:22px 32px"><p class="small" style="margin:0"><b>PHP2Shell (X 2026):</b> 2 × RCE w samym PHP (CVSS 9.2), znalezione przez zespoły ludzi z AI. Pierwsza próba ataku 17 X, łatka 21 X. Cloudflare włączył reguły WAF dla wszystkich, także darmowych, <b>ok. 9 h przed ujawnieniem</b>. AWS i Google też, automatycznie.</p></div>
+  <p style="font-size:56px;font-weight:850;color:var(--c);margin:6px 0 10px">PHP2Shell: 9 h przed ujawnieniem</p>
   <p class="xs muted" style="margin-top:14px">WAF patrzy na ruch. RASP patrzy na to, co aplikacja z nim robi. WAF to kontrola kompensująca, nie łatka.</p>
 </div>
 
