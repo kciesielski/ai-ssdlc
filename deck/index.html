@@ -504,8 +504,10 @@ run: echo <span class="s">"$TITLE"</span></pre>
     <div class="box tint" data-stage="projekt">
       <h3 style="color:var(--c)">Zapobieganie <span style="font-size:.6em;font-weight:700;opacity:.8">· security by design</span></h3>
       <ul class="clean small tight">
-        <li><b>Kyverno:</b> nie wdrożysz niepodpisanego ani uprzywilejowanego kontenera</li>
-        <li><b>Cilium:</b> network policy, default deny, także egress</li>
+        <li><b>Kyverno:</b> nie wdrożysz niepodpisanego / uprzywilejowanego</li>
+        <li><b>Cilium:</b> default deny, także egress</li>
+        <li><b>Guardrails w chmurze:</b> AWS SCP, Azure Policy, GCP Org Policy<span class="sub">np. zakaz publicznych bucketów</span></li>
+        <li><b>Workload Identity:</b> zero statycznych kluczy w aplikacji</li>
       </ul>
     </div>
   </div>
