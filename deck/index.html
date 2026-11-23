@@ -489,13 +489,26 @@ run: echo <span class="s">"$TITLE"</span></pre>
 </div>
 
 <div id="s24" class="step slide" data-stage="runtime" data-x="19075" data-y="-625">
-  <div class="kicker">Runtime · skanery</div>
-  <h2>Skanery runtime</h2>
-  <ul class="clean">
-    <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają<span class="sub">prewencja: <b>Kyverno</b> (nie wdrożysz niepodpisanego / uprzywilejowanego) · <b>Cilium</b> (default deny, także egress) · <b>Tetragon</b> (eBPF, widzi i może zablokować)</span></li>
-    <li><b>VM i kontenery:</b> podatne pakiety na żywych maszynach</li>
-    <li><b>Monitoring powierzchni ataku:</b> co faktycznie wystawiacie do internetu<span class="sub">za darmo na start: <b>moje.cert.pl</b> (CERT Polska, skaner Artemis, open source)</span></li>
-  </ul>
+  <div class="kicker">Runtime</div>
+  <h2 style="margin-bottom:36px">Wykrywaj i zapobiegaj</h2>
+  <div class="cols" style="gap:40px;align-items:stretch">
+    <div class="box tint" data-stage="runtime">
+      <h3 style="color:var(--c)">Wykrywanie</h3>
+      <ul class="clean small tight">
+        <li><b>Kubernetes:</b> konfiguracja klastra, obrazy, które naprawdę działają</li>
+        <li><b>VM i kontenery:</b> podatne pakiety na żywych maszynach</li>
+        <li><b>Powierzchnia ataku:</b> co faktycznie wystawiacie do internetu<span class="sub">za darmo na start: <b>moje.cert.pl</b> (CERT Polska, Artemis, open source)</span></li>
+      </ul>
+    </div>
+    <div class="box tint" data-stage="projekt">
+      <h3 style="color:var(--c)">Zapobieganie <span style="font-size:.6em;font-weight:700;opacity:.8">· security by design</span></h3>
+      <ul class="clean small tight">
+        <li><b>Kyverno:</b> nie wdrożysz niepodpisanego ani uprzywilejowanego kontenera</li>
+        <li><b>Cilium:</b> network policy, default deny, także egress</li>
+        <li><b>Tetragon:</b> eBPF, widzi i może zablokować</li>
+      </ul>
+    </div>
+  </div>
   <div class="punch">To działka, w której bardzo dużą część oddajemy toolingowi.</div>
 </div>
 
