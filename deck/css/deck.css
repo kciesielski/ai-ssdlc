@@ -436,3 +436,4 @@ body.laptop-revealed .district-caption:not([data-stage="laptop"]) { opacity: 0; 
 .go2sleep { position: absolute; right: 130px; bottom: 90px; font-size: 84px; font-weight: 850; margin: 0; color: var(--kod); }
 body[data-step="s16b"] .step.slide:not(#s16b) { opacity: 0 !important; }
 body.mode-slide #s16b:not(.active) { opacity: 0 !important; }
+.laptop-link-label code { font-family: var(--mono); font-size: .92em; }
