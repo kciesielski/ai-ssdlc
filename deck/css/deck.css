@@ -437,3 +437,10 @@ body.laptop-revealed .district-caption:not([data-stage="laptop"]) { opacity: 0; 
 body[data-step="s08b"] .step.slide:not(#s08b) { opacity: 0 !important; }
 body.mode-slide #s08b:not(.active) { opacity: 0 !important; }
 .laptop-link-label code { font-family: var(--mono); font-size: .92em; }
+
+/* S01 logo only, S02 avatar + MUDs */
+#s01 .title-speaker .company-logo { margin-left: 0; height: 150px; }
+.about-head { display: flex; align-items: center; gap: 40px; margin-bottom: 30px; }
+.about-head h2 { margin: 0; }
+.muds { display: flex; gap: 30px; margin-top: 40px; flex-wrap: wrap; }
+.muds code { font-size: 40px; padding: 14px 26px; border-radius: 14px; color: var(--c); background: color-mix(in srgb, var(--c) 10%, white); border: 3px solid var(--c); }
