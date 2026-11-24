@@ -1,3 +1,4 @@
 *.md
 !resources.md
 !/README.md
+.DS_Store
